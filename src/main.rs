@@ -1,0 +1,72 @@
+use macroquad::prelude::*;
+
+struct Timer {
+    current: f64,
+}
+impl Timer {
+    fn now() -> Timer {
+        Timer {
+            current: get_time(),
+        }
+    }
+    fn elapsed(&self) -> u64 {
+        ((get_time() - self.current) * 1000.0) as u64
+    }
+}
+#[macroquad::main("BasicShapes")]
+async fn main() {
+    let mut history: Vec<String> = Vec::new();
+    let mut command = String::from("");
+    let mut status = String::from("#");
+    let mut time_cursor = Timer::now();
+    let mut time_del = Timer::now();
+    let mut toggle = false;
+
+    loop {
+        clear_background(BLACK);
+
+        match get_char_pressed() {
+            Some(key) if key.is_ascii_whitespace() || key.is_ascii_alphanumeric() => {
+                command.push(key);
+            }
+            _ => (),
+        }
+        if is_key_pressed(KeyCode::Enter) {
+            let line = status.clone() + &command;
+            history.push(line);
+            command.clear();
+        }
+        if is_key_down(KeyCode::Backspace) && time_del.elapsed() > 70 {
+            time_del = Timer::now();
+            command.pop();
+        }
+        let mut offset = 0.0;
+        for text in &history {
+            let rect = draw_text(text, 0.0, 100.0 + offset, 30.0, GREEN);
+            offset += rect.height + 2.0;
+        }
+
+        let status_rect = draw_text(&status, 0.0, offset + 100.0, 30.0, GREEN);
+        let cmd_rect = draw_text(&command, status_rect.width, offset + 100.0, 30.0, GREEN);
+
+        if time_cursor.elapsed() > 500 && !toggle {
+            toggle = true;
+            time_cursor = Timer::now();
+        }
+        if time_cursor.elapsed() > 500 && toggle {
+            toggle = false;
+            time_cursor = Timer::now();
+        }
+
+        if toggle {
+            draw_text(
+                "|",
+                cmd_rect.width + status_rect.width,
+                offset + 100.0,
+                30.0,
+                GREEN,
+            );
+        }
+        next_frame().await
+    }
+}
