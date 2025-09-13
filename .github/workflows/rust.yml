@@ -22,7 +22,7 @@ jobs:
           # Add the wasm target for cargo build
           targets: wasm32-unknown-unknown
     - name: Build
-      run: cargo build --target wasm32-unknow-unknown --release
+      run: cargo build --target wasm32-unknown-unknown --release
     - name: Run tests
       run: cargo test --verbose  
     - name: Copy files to artifact directory
