@@ -3,6 +3,9 @@ use sapp_jsutils::JsObject;
 const ABOUT: &str = include_str!("about.txt");
 const BANNER: &str = include_str!("banner.txt");
 const LS: &str = "about.txt linkedin.sh";
+const REPEAT_DELAY: u64 = 400;
+const REPEAT_RATE: u64 = 40;
+
 struct Timer {
     current: f64,
 }
@@ -41,10 +44,11 @@ async fn main() {
     let mut command = String::from("");
     let status = String::from("#");
     let mut time_cursor = Timer::now();
+    let mut time_delete = None;
     let mut toggle = false;
+    let mut in_repeat_phase = false;
     const INITIAL_Y: f32 = 170.0;
     const FIXED_HEIGHT: f32 = 23.0;
-
     loop {
         clear_background(BLACK);
 
@@ -52,12 +56,34 @@ async fn main() {
             Some(key) if !key.is_ascii_control() => {
                 command.push(key);
             }
-
-            Some('\u{8}') => {
-                command.pop();
-            }
             _ => (),
         }
+
+        if is_key_pressed(KeyCode::Backspace) {
+            command.pop();
+            time_delete = Some(Timer::now());
+            in_repeat_phase = false;
+        }
+        if is_key_down(KeyCode::Backspace) {
+            if let Some(timer) = &time_delete {
+                let threshold = if in_repeat_phase {
+                    REPEAT_RATE
+                } else {
+                    REPEAT_DELAY
+                };
+
+                if timer.elapsed() >= threshold {
+                    command.pop();
+                    time_delete = Some(Timer::now());
+                    in_repeat_phase = true;
+                }
+            }
+        }
+        if is_key_released(KeyCode::Backspace) {
+            time_delete = None;
+            in_repeat_phase = false;
+        }
+
         if is_key_pressed(KeyCode::Enter) {
             let line = status.clone() + &command;
             history.push(line);
