@@ -16,6 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install the Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+          # Add the wasm target for cargo build
+          targets: wasm32-unknown-unknown
     - name: Build
       run: cargo build --target wasm32-unknow-unknown --release
     - name: Run tests
