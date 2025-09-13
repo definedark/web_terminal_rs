@@ -37,7 +37,7 @@ unsafe extern "C" {
 #[macroquad::main("web_terminal")]
 async fn main() {
     let mut history: Vec<String> = Vec::new();
-    let mut history_index = 0;
+    let mut scrolling_index = 0;
     let mut command = String::from("");
     let status = String::from("#");
     let mut time_cursor = Timer::now();
@@ -64,6 +64,7 @@ async fn main() {
             match command.as_str() {
                 "clear" => {
                     history.clear();
+                    scrolling_index = 0;
                 }
                 "ls" => {
                     history.push(LS.to_string());
@@ -89,8 +90,8 @@ async fn main() {
             command.clear();
         }
         let mut offset = 0.0;
-        if history.len() - history_index > 20 {
-            history_index += 1;
+        if history.len() - scrolling_index > 20 {
+            scrolling_index += 1;
         }
 
         draw_multiline_text(
@@ -101,7 +102,7 @@ async fn main() {
             None,
             GREEN,
         );
-        for text in &history[history_index..] {
+        for text in &history[scrolling_index..] {
             draw_text(text, 0.0, INITIAL_Y + offset, 30.0, GREEN);
             offset += FIXED_HEIGHT;
         }
