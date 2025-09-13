@@ -52,7 +52,7 @@ async fn main() {
                 command.push(key);
             }
 
-            Some(key) if key == '\u{8}' => {
+            Some('\u{8}') => {
                 command.pop();
             }
             _ => (),
