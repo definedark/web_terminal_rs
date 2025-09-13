@@ -24,6 +24,7 @@
         <script src="https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js"></script>
         <script src="https://not-fl3.github.io/miniquad-samples/sapp_jsutils.js"></script>
         <script>
+            canvas.addEventListener("contextmenu", (e) => e.preventDefault());
             function on_init() {}
             register_plugin = function (importObject) {
                 importObject.env.native_open_url = native_open_url;
