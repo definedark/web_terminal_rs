@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 use sapp_jsutils::JsObject;
 const ABOUT: &str = include_str!("about.txt");
+const BANNER: &str = include_str!("banner.txt");
 const LS: &str = "about.txt linkedin.sh";
 struct Timer {
     current: f64,
@@ -41,7 +42,7 @@ async fn main() {
     let status = String::from("#");
     let mut time_cursor = Timer::now();
     let mut toggle = false;
-    const INITIAL_Y: f32 = 100.0;
+    const INITIAL_Y: f32 = 170.0;
     const FIXED_HEIGHT: f32 = 23.0;
 
     loop {
@@ -91,6 +92,15 @@ async fn main() {
         if history.len() - history_index > 20 {
             history_index += 1;
         }
+
+        draw_multiline_text(
+            BANNER,
+            screen_width() / 2.0 - 270.0,
+            20.0,
+            24.0,
+            None,
+            GREEN,
+        );
         for text in &history[history_index..] {
             draw_text(text, 0.0, INITIAL_Y + offset, 30.0, GREEN);
             offset += FIXED_HEIGHT;
