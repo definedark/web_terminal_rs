@@ -29,7 +29,7 @@ jobs:
         # Copy the necessary files for the website to run
       run: |
           mkdir dist
-          cp src/index.html dist/
+          cp index.html dist/
           cp target/wasm32-unknown-unknown/release/web_terminal_rs.wasm dist/
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3.0.1
