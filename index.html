@@ -22,7 +22,17 @@
         <canvas id="glcanvas" tabindex="1"></canvas>
         <!-- Minified and statically hosted version of https://github.com/not-fl3/macroquad/blob/master/js/mq_js_bundle.js -->
         <script src="https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js"></script>
+        <script src="https://not-fl3.github.io/miniquad-samples/sapp_jsutils.js"></script>
         <script>
+            function on_init() {}
+            register_plugin = function (importObject) {
+                importObject.env.native_open_url = native_open_url;
+            };
+            miniquad_add_plugin({ register_plugin, on_init });
+            function native_open_url(s) {
+                const url = consume_js_object(s);
+                window.open(url, "_blank");
+            }
             load("web_terminal_rs.wasm");
         </script>
         <!-- Your compiled wasm file -->
