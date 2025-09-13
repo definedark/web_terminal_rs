@@ -38,11 +38,11 @@ async fn main() {
     let mut history: Vec<String> = Vec::new();
     let mut history_index = 0;
     let mut command = String::from("");
-    let mut status = String::from("#");
+    let status = String::from("#");
     let mut time_cursor = Timer::now();
-    let mut time_del = Timer::now();
     let mut toggle = false;
     const INITIAL_Y: f32 = 100.0;
+    const FIXED_HEIGHT: f32 = 23.0;
 
     loop {
         clear_background(BLACK);
@@ -50,6 +50,10 @@ async fn main() {
         match get_char_pressed() {
             Some(key) if !key.is_ascii_control() => {
                 command.push(key);
+            }
+
+            Some(key) if key == '\u{8}' => {
+                command.pop();
             }
             _ => (),
         }
@@ -80,22 +84,16 @@ async fn main() {
                         }
                     }
                 }
-                _ => (),
             }
             command.clear();
-        }
-        if is_key_down(KeyCode::Backspace) && time_del.elapsed() > 70 {
-            time_del = Timer::now();
-            command.pop();
         }
         let mut offset = 0.0;
         if history.len() - history_index > 20 {
             history_index += 1;
         }
         for text in &history[history_index..] {
-            // let rect = draw_text_ex(text, 0.0, INITIAL_Y + offset, textParams.clone());
-            let rect = draw_text(text, 0.0, INITIAL_Y + offset, 30.0, GREEN);
-            offset += rect.height + 5.0;
+            draw_text(text, 0.0, INITIAL_Y + offset, 30.0, GREEN);
+            offset += FIXED_HEIGHT;
         }
 
         let status_rect = draw_text(&status, 0.0, INITIAL_Y + offset, 30.0, GREEN);
@@ -112,7 +110,7 @@ async fn main() {
 
         if toggle {
             draw_text(
-                "|",
+                "_",
                 cmd_rect.width + status_rect.width,
                 INITIAL_Y + offset,
                 30.0,
