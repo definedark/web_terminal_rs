@@ -1,5 +1,7 @@
+
 This web-based terminal demo is written in Rust
 and brought to life in your browser, using Macroquads.
 It's a fun little project, that serves also as small showcase of my work and interests
+
 Created by Ilias Rammos
 Feel free to explore!
